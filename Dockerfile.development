@@ -1,0 +1,26 @@
+# Use an official Python runtime as a parent image
+FROM python:3.12-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Instala dependências de sistema necessárias
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia o requirements.txt para o container
+COPY requirements.txt .
+
+# Instala os pacotes Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia o restante do código
+COPY . .
+
+# Expondo a porta
+EXPOSE 8001
+
+# Comando para rodar a aplicação
+CMD ["uvicorn", "mainExperimental:appExp", "--host", "0.0.0.0", "--port", "8001"]
